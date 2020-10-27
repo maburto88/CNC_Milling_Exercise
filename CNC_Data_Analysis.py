@@ -32,3 +32,36 @@ for file in filenames:
 # Concatendating all individual DFs together
 ## If headers are the same, then each new item is concatenated to the end
 df = pd.concat(li,ignore_index=True)
+
+#%% Importing Experiment Results Data
+exp_result = pd.read_csv(r'F:\Work - Detroit Diesel\CNC_Machining_Dataset\train.csv')
+
+# Cleaning Exp Data
+exp_result['passed_visual_inspection'].fillna('no',inplace=True)
+
+#%% Merging Exp Results & CNC Data
+df_final = df.merge(exp_result,right_on='No',left_on='exp_no',how='left')
+df_final.drop('No',axis=1,inplace=True)
+
+#%% Exploratory Data Analysis
+plt.figure(figsize=(12,6))
+sns.countplot(data=df_final,
+              x='Machining_Process'
+             )
+
+#%% Data Cleansing
+df_final['Machining_Process'].replace(to_replace=('end','Starting'),value=('End','Prep'),inplace=True)
+
+#%% Exploratory Data Analysis Cont.
+plt.figure(figsize=(12,6))
+sns.countplot(data=df_final,
+              x='Machining_Process'
+             )
+
+plt.figure(figsize=(12,6))
+sns.countplot(data=df_final,
+              x='tool_condition'
+             )
+
+plt.figure(figsize=(12,6))
+sns.countplot(data=df_final,x='machining_finalized')
